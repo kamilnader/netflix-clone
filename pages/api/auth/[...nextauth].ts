@@ -1,10 +1,10 @@
 import NextAuth, { AuthOptions } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import prismadb from "@/lib/prismadb";
-import { compare } from "bcrypt";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { compare } from "bcrypt";
+import prismadb from "@/lib/prismadb";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -26,7 +26,7 @@ export const authOptions: AuthOptions = {
         },
         password: {
           label: "Password",
-          type: "password",
+          type: "passord",
         },
       },
       async authorize(credentials) {
@@ -48,6 +48,7 @@ export const authOptions: AuthOptions = {
           credentials.password,
           user.hashedPassword
         );
+
         if (!isCorrectPassword) {
           throw new Error("Incorrect password");
         }
@@ -61,9 +62,7 @@ export const authOptions: AuthOptions = {
   },
   debug: process.env.NODE_ENV === "development",
   adapter: PrismaAdapter(prismadb),
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   jwt: {
     secret: process.env.NEXTAUTH_JWT_SECRET,
   },
